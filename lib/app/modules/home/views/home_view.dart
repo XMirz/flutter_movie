@@ -17,7 +17,7 @@ class HomeView extends GetView<HomeController> {
         () => SafeArea(
           child: IndexedStack(
             index: controller.tabIndex.value,
-            children: const [HomeScreen(), SearchScreen()],
+            children: [HomeScreen(), const SearchScreen()],
           ),
         ),
       ),

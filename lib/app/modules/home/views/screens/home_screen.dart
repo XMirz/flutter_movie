@@ -1,5 +1,8 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getx_movie/app/data/models/movie.dart';
+import 'package:getx_movie/app/modules/home/controllers/home_controller.dart';
 import 'package:getx_movie/app/widgets/shimmer_widget.dart';
 import 'package:getx_movie/core/values/colors.dart';
 import 'package:getx_movie/core/values/styles.dart';
@@ -7,11 +10,14 @@ import 'package:heroicons/heroicons.dart';
 import 'package:getx_movie/core/values/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
 
+  final controller = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    // Fetch and Update state
+    controller.fetchNowPlaying();
     return ListView(
       physics: const ClampingScrollPhysics(),
       children: [
@@ -71,7 +77,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         // Trending Section
-        spaceX(8),
+        spaceY(16),
         Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,36 +85,83 @@ class HomeScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'Trending Now',
+                  'Now Playing',
                   style: mHeaderStyle,
                 ),
               ),
-              spaceY(8),
-              Container(
-                height: 180,
-                width: screenSize.width,
-                child: Swiper(
-                  autoplay: false,
-                  itemCount: 8,
-                  loop: true,
-                  viewportFraction: 0.7,
-                  scale: 0.8,
-                  // onIndexChanged: (index) {},
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      child: ShimmerWidget.rectangle(
-                        height: screenSize.height * 0.2,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    );
-                  },
+              spaceY(16),
+              Obx(
+                () => Container(
+                  height: 180,
+                  width: screenSize.width,
+                  child: Swiper(
+                    autoplay: false,
+                    itemCount: controller.nowPlayingMovies.length,
+                    loop: true,
+                    viewportFraction: 0.7,
+                    scale: 0.8,
+                    // onIndexChanged: (index) {
+                    //   controller.nowPlayingCarouselIndex.value = index;
+                    // },
+                    itemBuilder: (context, index) {
+                      return controller.nowPlayingMovies.isNotEmpty
+                          ? buildNowPlayingCard(
+                              controller.nowPlayingMovies[index])
+                          : buildNowPlayingShimmer();
+                    },
+                  ),
                 ),
               )
             ],
           ),
         )
       ],
+    );
+  }
+
+  Widget buildNowPlayingShimmer() {
+    return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        child: ShimmerWidget.rectangle(
+          height: Get.size.height * 0.2,
+          borderRadius: BorderRadius.circular(8),
+        ));
+  }
+
+  Widget buildNowPlayingCard(Movie movie) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: mBackgroundSecondary,
+              image: DecorationImage(
+                  image: NetworkImage(movie.posterImage), fit: BoxFit.cover),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: const LinearGradient(
+                    begin: FractionalOffset.center,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [Colors.transparent, Colors.black])),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(controller.nowPlayingCarouselIndex.value.toString()),
+                Text(controller.nowPlayingCarouselIndex.value.toString()),
+                Text(controller.nowPlayingCarouselIndex.value.toString()),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
