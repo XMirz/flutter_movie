@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 /// Add vertical space
-Widget spaceX(double height) {
+Widget spaceY(double height) {
   return SizedBox(height: height);
 }
 
 /// Add horizontal space
-Widget spaceY(double width) {
+Widget spaceX(double width) {
   return SizedBox(width: width);
 }

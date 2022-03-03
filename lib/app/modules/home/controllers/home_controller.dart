@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
-
   final tabIndex = 0.obs;
+  final trendingCarouselIndex = 0.obs;
 
   @override
   void onInit() {
