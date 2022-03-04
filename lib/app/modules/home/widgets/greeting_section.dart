@@ -36,11 +36,11 @@ class GreetingSection extends StatelessWidget {
                 children: [
                   Text(
                     'Hello, Hafez',
-                    style: mTitleStyle,
+                    style: mGreetingTextStyle,
                   ),
                   Text(
                     'Find new movies here',
-                    style: mSubtitleStyle,
+                    style: mGreetingSubTextStyle,
                   ),
                 ],
               ),
